@@ -1,3 +1,4 @@
+from __future__ import print_function
 import time
 import sys
 
@@ -20,10 +21,10 @@ fds_client = GalaxyFDSClient(access_key, access_secret, config)
 #####################
 # List buckets
 buckets = fds_client.list_buckets()
-print 'buckets list:'
+print('buckets list:')
 for bucket in buckets:
-  print bucket
-print
+  print(bucket)
+print("---end---")
 
 # Check and create the bucket
 if not fds_client.does_bucket_exist(bucket_name):
@@ -40,13 +41,13 @@ fds_client.put_object(bucket_name, object_name, object_content)
 obj = fds_client.get_object(bucket_name, object_name)
 for chunk in obj.stream:
   sys.stdout.write(chunk)
-print '\n'
+print('\n')
 
 # Download the object file
 data_file = "/tmp/fds_file"
-client.download(bucket_name, object_name, data_file)
+fds_client.download(bucket_name, object_name, data_file)
 data_file2 = "/tmp/fds_file2"
-client.download_object_with_uri("fds://" + bucket_name + "/" + object_name, data_file2)
+fds_client.download_object_with_uri("fds://" + bucket_name + "/" + object_name, data_file2)
 
 # Delete the object
 fds_client.delete_object(bucket_name, object_name)
@@ -60,12 +61,16 @@ fds_client.put_object(bucket_name, object_name, object_content)
 object_content.close()
 
 # Generate a pre-signed url
-import urllib2
+try:
+  import urllib2
+except ImportError:
+  import urllib.request as urllib2
+
 url = fds_client.generate_presigned_uri(None, bucket_name, object_name,
     time.time() * 1000 + 60000)
 
 # Get the object content
-print urllib2.urlopen(url).read()
+print(urllib2.urlopen(url).read())
 
 # Delete the object
 fds_client.delete_object(bucket_name, object_name)
@@ -87,7 +92,7 @@ fds_client.set_object_acl(bucket_name, object_name, object_acl)
 # Read the shared object by another client
 for chunk in other_client.get_object(bucket_name, object_name).stream:
     sys.stdout.write(chunk)
-print '\n'
+print('\n')
 
 # Grant FULL_CONTROL permission of bucket to others
 bucket_acl = AccessControlList()
@@ -96,7 +101,7 @@ fds_client.set_bucket_acl(bucket_name, bucket_acl)
 
 # Post an object by others
 result = other_client.post_object(bucket_name, 'post')
-print result.object_name
+print(result.object_name)
 other_client.delete_object(bucket_name, result.object_name)
 #####################
 
@@ -107,17 +112,17 @@ if result.is_truncated:
   while result.is_truncated:
     result = fds_client.list_next_batch_of_objects(result)
     for object_summary in result.objects:
-      print object_summary.object_name
+      print(object_summary.object_name)
 else:
   for object_summary in result.objects:
-    print object_summary.object_name
+    print(object_summary.object_name)
 #####################
 
 # Delete the bucket
 try:
   fds_client.delete_bucket(bucket_name)
-except GalaxyFDSClientException, e:
-  print e.message
+except GalaxyFDSClientException as e:
+  print(e.message)
 
 fds_client.delete_object(bucket_name, object_name)
 fds_client.delete_bucket(bucket_name)

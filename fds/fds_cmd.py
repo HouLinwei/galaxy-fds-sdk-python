@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import json
 import logging
 import os
@@ -170,7 +171,7 @@ def put_object(data_file, bucket_name, object_name, metadata):
             length = sys.stdin.readinto(byte_buffer)
             if length <= 0:
                 break
-            print length
+            print(length)
 
             rtn = fds_client.upload_part(bucket_name=upload_token.bucket_name,
                                          object_name=upload_token.object_name,
@@ -181,7 +182,7 @@ def put_object(data_file, bucket_name, object_name, metadata):
             part_number += 1
 
         upload_part_result = UploadPartResultList({"uploadPartResultList": upload_list})
-        print json.dumps(upload_part_result)
+        print(json.dumps(upload_part_result))
         fds_client.complete_multipart_upload(bucket_name=upload_token.bucket_name,
                                              object_name=upload_token.object_name,
                                              upload_id=upload_token.upload_id,
@@ -424,7 +425,7 @@ def main():
     parser.add_argument('--offset',
                         nargs='?',
                         metavar='offset',
-                        type=long,
+                        type=int,
                         const=0,
                         default=0,
                         dest='offset',
@@ -433,7 +434,7 @@ def main():
     parser.add_argument('--length',
                         nargs='?',
                         metavar='length',
-                        type=long,
+                        type=int,
                         dest='length',
                         const=-1,
                         default=-1,
@@ -554,23 +555,23 @@ def main():
                         exit(1)
             else:
                 parser.print_help()
-                print "Config:"
-                print "put following json into ~/.config/fds/client.config"
-                print "{"
-                print "  \"ak\":\"ACCESS_KEY\","
-                print "  \"sk\":\"SECRET_KEY\","
-                print "  \"region\":\"REGION\","
-                print "  \"end_point\":\"END_POINT\" (optional)"
-                print "}"
-                print "Usage Example:"
-                print "\t[create bucket]\n\t\tfds -m put -b BUCKET_NAME"
-                print "\t[list buckets]\n\t\tfds -l"
-                print "\t[list objects under bucket]\n\t\tfds -l -b BUCKET_NAME"
-                print "\t[list directory under bucket]\n\t\tfds -L DIR -b BUCKET_NAME"
-                print "\t[create object under bucket]\n\t\tfds -m put -b BUCKET_NAME -o OBJECT_NAME -d FILE_PATH"
-                print "\t[create object with pipline]\n\t\tcat file | fds -m put -b BUCKET_NAME -o OBJECT_NAME"
+                print("Config:")
+                print("put following json into ~/.config/fds/client.config")
+                print("{")
+                print("  \"ak\":\"ACCESS_KEY\",")
+                print("  \"sk\":\"SECRET_KEY\",")
+                print("  \"region\":\"REGION\",")
+                print("  \"end_point\":\"END_POINT\" (optional)")
+                print("}")
+                print("Usage Example:")
+                print("\t[create bucket]\n\t\tfds -m put -b BUCKET_NAME")
+                print("\t[list buckets]\n\t\tfds -l")
+                print("\t[list objects under bucket]\n\t\tfds -l -b BUCKET_NAME")
+                print("\t[list directory under bucket]\n\t\tfds -L DIR -b BUCKET_NAME")
+                print("\t[create object under bucket]\n\t\tfds -m put -b BUCKET_NAME -o OBJECT_NAME -d FILE_PATH")
+                print("\t[create object with pipline]\n\t\tcat file | fds -m put -b BUCKET_NAME -o OBJECT_NAME")
 
-    except Exception, e:
+    except Exception as e:
         sys.stderr.write(e.message)
         sys.stderr.flush()
         if debug_enabled:

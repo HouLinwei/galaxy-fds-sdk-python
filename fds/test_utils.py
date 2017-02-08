@@ -1,6 +1,6 @@
 import unittest
 
-import utils
+from fds import utils
 
 class UtilsTest(unittest.TestCase):
 

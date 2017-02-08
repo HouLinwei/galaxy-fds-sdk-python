@@ -1,32 +1,36 @@
 import json
 import hashlib
-from urllib import quote
+
+try:
+    from urllib import quote
+except ImportError:
+    from urllib.parse import quote
 
 import requests
 
-from auth.common import Common
-from auth.signature.signer import Signer
-from fds_client_configuration import FDSClientConfiguration
-from fds_request import FDSRequest
-from galaxy_fds_client_exception import GalaxyFDSClientException
-from model.access_control_policy import AccessControlPolicy
-from model.fds_bucket import FDSBucket
-from model.fds_object import FDSObject
-from model.fds_object_listing import FDSObjectListing
-from model.fds_object_metadata import FDSObjectMetadata
-from model.fds_object_summary import FDSObjectSummary
-from model.permission import AccessControlList, UserGroups, Permission, \
+from fds.auth.common import Common
+from fds.auth.signature.signer import Signer
+from fds.fds_client_configuration import FDSClientConfiguration
+from fds.fds_request import FDSRequest
+from fds.galaxy_fds_client_exception import GalaxyFDSClientException
+from fds.model.access_control_policy import AccessControlPolicy
+from fds.model.fds_bucket import FDSBucket
+from fds.model.fds_object import FDSObject
+from fds.model.fds_object_listing import FDSObjectListing
+from fds.model.fds_object_metadata import FDSObjectMetadata
+from fds.model.fds_object_summary import FDSObjectSummary
+from fds.model.permission import AccessControlList, UserGroups, Permission, \
   GrantType
-from model.permission import Grant
-from model.permission import Grantee
-from model.permission import Owner
-from model.put_object_result import PutObjectResult
-from model.subresource import SubResource
-from model.init_multipart_upload_result import InitMultipartUploadResult
-from model.upload_part_result import UploadPartResult
+from fds.model.permission import Grant
+from fds.model.permission import Grantee
+from fds.model.permission import Owner
+from fds.model.put_object_result import PutObjectResult
+from fds.model.subresource import SubResource
+from fds.model.init_multipart_upload_result import InitMultipartUploadResult
+from fds.model.upload_part_result import UploadPartResult
 import os
 import sys
-import utils
+from fds import utils
 
 class GalaxyFDSClient(object):
   '''
@@ -710,7 +714,7 @@ class GalaxyFDSClient(object):
              (base_uri, quote(bucket_name), quote(object_name), \
               Common.GALAXY_ACCESS_KEY_ID, self._auth._app_key, \
               Common.EXPIRES, str(int(expiration)), Common.SIGNATURE, signature)
-    except Exception, e:
+    except Exception as e:
       message = 'Wrong expiration given. ' \
                 'Milliseconds since January 1, 1970 should be used. ' + str(e)
       raise GalaxyFDSClientException(message)

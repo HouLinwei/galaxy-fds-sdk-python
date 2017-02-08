@@ -1,5 +1,5 @@
-from fds_object_summary import FDSObjectSummary
-from permission import Owner
+from fds.model.fds_object_summary import FDSObjectSummary
+from fds.model.permission import Owner
 
 class FDSObjectListing(dict):
   '''

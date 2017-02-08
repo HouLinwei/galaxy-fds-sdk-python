@@ -4,8 +4,13 @@ import hmac
 from email.utils import formatdate
 from hashlib import sha1
 from requests.auth import AuthBase
-from urllib import unquote
-from urlparse import urlparse
+try:
+    from urllib import unquote
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import unquote
+    from urllib.parse import urlparse
+
 
 from fds.auth.common import Common
 from fds.model.subresource import SubResource
