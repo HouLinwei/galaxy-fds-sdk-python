@@ -45,6 +45,8 @@ class Signer(AuthBase):
     :return: The signed result, aka the signature
     '''
     string_to_sign = self._construct_string_to_sign(method, headers, url)
+    string_to_sign = bytes(string_to_sign.encode("utf-8"))
+    app_secret =  bytes(app_secret.encode("utf-8"))
     digest = hmac.new(app_secret, string_to_sign, digestmod=sha1)
     return digest.digest()
 
